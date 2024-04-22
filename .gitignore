@@ -1,0 +1,5 @@
+test/spine*
+test/UserSettings/*
+test/Library/*
+test/Assets/Spine*
+test/Temp
