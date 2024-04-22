@@ -54,7 +54,6 @@
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/VertexColorCycler.cs" />
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/EnvMapAnimator.cs" />
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/TMP_TextSelector_A.cs" />
-    <Compile Include="Assets/Scripts/JointVisualizer.cs" />
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/Benchmark01_UGUI.cs" />
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/SimpleScript.cs" />
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/Benchmark04.cs" />
@@ -74,6 +73,7 @@
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/TextMeshSpawner.cs" />
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/VertexZoom.cs" />
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/Benchmark02.cs" />
+    <Compile Include="Assets/Scripts/SkeletonMeshAnimator.cs" />
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/TMP_TextSelector_B.cs" />
     <Compile Include="Assets/Scripts/DebugJointVisualizer.cs" />
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/SkewTextExample.cs" />
@@ -82,7 +82,6 @@
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/ShaderPropAnimator.cs" />
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/CameraController.cs" />
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/Benchmark03.cs" />
-    <Compile Include="Assets/Scripts/MeshVisualizer.cs" />
     <Compile Include="Assets/Scripts/AnimDataImporter.cs" />
     <Compile Include="Assets/TextMesh Pro/Examples &amp; Extras/Scripts/TMP_TextInfoDebugTool.cs" />
     <None Include="Assets/TextMesh Pro/Shaders/TMPro.cginc" />
@@ -363,13 +362,13 @@
       <HintPath>/Applications/Unity/Hub/Editor/2022.3.24f1/Unity.app/Contents/Managed/UnityEngine/UnityEditor.UnityConnectModule.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Collections.LowLevel.ILSupport">
-      <HintPath>/Users/jerome.byrne/test/Library/PackageCache/com.unity.collections@1.2.4/Unity.Collections.LowLevel.ILSupport/Unity.Collections.LowLevel.ILSupport.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/PackageCache/com.unity.collections@1.2.4/Unity.Collections.LowLevel.ILSupport/Unity.Collections.LowLevel.ILSupport.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
-      <HintPath>/Users/jerome.byrne/test/Library/PackageCache/com.unity.visualscripting@1.9.2/Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/PackageCache/com.unity.visualscripting@1.9.2/Runtime/VisualScripting.Flow/Dependencies/NCalc/Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
-      <HintPath>/Users/jerome.byrne/test/Library/PackageCache/com.unity.nuget.newtonsoft-json@3.2.1/Runtime/Newtonsoft.Json.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/PackageCache/com.unity.nuget.newtonsoft-json@3.2.1/Runtime/Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>/Applications/Unity/Hub/Editor/2022.3.24f1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
@@ -741,175 +740,175 @@
       <HintPath>/Applications/Unity/Hub/Editor/2022.3.24f1/Unity.app/Contents/NetStandard/compat/2.1.0/shims/netfx/mscorlib.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Notifications">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.Notifications.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.Notifications.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.IK.Runtime">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.2D.IK.Runtime.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.2D.IK.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Burst.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.Burst.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.Burst.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Common.Path.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.2D.Common.Path.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.2D.Common.Path.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.AdaptivePerformance.Simulator.Extension">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.AdaptivePerformance.Simulator.Extension.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.AdaptivePerformance.Simulator.Extension.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.PixelPerfect.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.2D.PixelPerfect.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.2D.PixelPerfect.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rider.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.AdaptivePerformance.Simulator.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.AdaptivePerformance.Simulator.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.AdaptivePerformance.Simulator.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Aseprite.Common">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.2D.Aseprite.Common.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.2D.Aseprite.Common.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Sprite.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Flow">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.VisualScripting.Flow.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.VisualScripting.Flow.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Mathematics.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.Mathematics.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.Mathematics.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Tilemap.Extras.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.2D.Tilemap.Extras.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.2D.Tilemap.Extras.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Collections">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.Collections.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.Collections.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.SpriteShape.Runtime">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.2D.SpriteShape.Runtime.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.2D.SpriteShape.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.PixelPerfect">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.2D.PixelPerfect.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.2D.PixelPerfect.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Aseprite.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.2D.Aseprite.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.2D.Aseprite.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VSCode.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Notifications.Unified">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.Notifications.Unified.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.Notifications.Unified.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Profiling.Core">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.Profiling.Core.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.Profiling.Core.dll</HintPath>
     </Reference>
     <Reference Include="PsdPlugin">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/PsdPlugin.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/PsdPlugin.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PlasticSCM.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.PlasticSCM.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.PlasticSCM.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Burst">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.Burst.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.Burst.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Shared.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.VisualScripting.Shared.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.VisualScripting.Shared.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.AdaptivePerformance">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.AdaptivePerformance.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.AdaptivePerformance.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualStudio.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.VisualStudio.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.VisualStudio.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Notifications.iOS">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.Notifications.iOS.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.Notifications.iOS.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Core">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.VisualScripting.Core.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.VisualScripting.Core.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Animation.Runtime">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.2D.Animation.Runtime.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.2D.Animation.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Core.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.VisualScripting.Core.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.VisualScripting.Core.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.AdaptivePerformance.Profiler.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.AdaptivePerformance.Profiler.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.AdaptivePerformance.Profiler.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Tilemap.Extras">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.2D.Tilemap.Extras.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.2D.Tilemap.Extras.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.AdaptivePerformance.UI.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.AdaptivePerformance.UI.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.AdaptivePerformance.UI.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Flow.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.VisualScripting.Flow.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.VisualScripting.Flow.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.InternalAPIEngineBridge.001">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.001.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.001.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Common.Runtime">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.2D.Common.Runtime.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.2D.Common.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.SettingsProvider.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.VisualScripting.SettingsProvider.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.VisualScripting.SettingsProvider.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.InternalAPIEditorBridge.001">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.InternalAPIEditorBridge.001.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.InternalAPIEditorBridge.001.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Psdimporter.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.2D.Psdimporter.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.2D.Psdimporter.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Subsystem.Registration">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.Subsystem.Registration.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.Subsystem.Registration.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Mobile.AndroidLogcat.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.Mobile.AndroidLogcat.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.Mobile.AndroidLogcat.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.State.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.VisualScripting.State.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.VisualScripting.State.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Mathematics">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.Mathematics.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.Mathematics.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Common.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.2D.Common.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.2D.Common.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.AdaptivePerformance.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.AdaptivePerformance.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.AdaptivePerformance.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.State">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.VisualScripting.State.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.VisualScripting.State.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Notifications.Android">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.Notifications.Android.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.Notifications.Android.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.SpriteShape.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.2D.SpriteShape.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.2D.SpriteShape.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Tilemap.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.Animation.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.2D.Animation.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.2D.Animation.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.2D.IK.Editor">
-      <HintPath>/Users/jerome.byrne/test/Library/ScriptAssemblies/Unity.2D.IK.Editor.dll</HintPath>
+      <HintPath>/Users/jerome.byrne/astrocade_test/test/Library/ScriptAssemblies/Unity.2D.IK.Editor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

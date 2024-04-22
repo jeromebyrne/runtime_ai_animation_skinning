@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BoneWeightCalculator : MonoBehaviour
 {
-    public float influenceRadius = 1.25f;  
+    public float influenceRadius = 1.1f;  
 
     public void AssignBoneWeights(SkinnedMeshRenderer skinnedMeshRenderer)
     {
@@ -30,7 +30,10 @@ public class BoneWeightCalculator : MonoBehaviour
         // Calculate weights based on inverse distance, scaled by influenceRadius
         for (int i = 0; i < bones.Length; i++)
         {
-            float dist = Vector3.Distance(vertex, bones[i].position);
+            Vector3 bonePos = bones[i].position;
+            // flippedBoneYPos.y *= -1;
+            
+            float dist = Vector3.Distance(vertex, bonePos);
 
             if (dist < smallestDistance)
             {
