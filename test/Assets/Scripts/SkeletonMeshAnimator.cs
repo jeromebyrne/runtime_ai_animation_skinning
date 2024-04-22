@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class SkeletonMeshAnimator : MonoBehaviour
 {
@@ -211,31 +212,54 @@ public class SkeletonMeshAnimator : MonoBehaviour
         }
     }
     
-    void ApplyRotation(Transform bone, Transform parentBone, int index, int parentIndex)
+    void ApplyRotation(Transform bone, Transform child, int index, int childIndex)
     {
-        Vector2 currentParentPos = new Vector2(parentBone.localPosition.x, parentBone.localPosition.y);
-        Vector2 currentChildPos = new Vector2(bone.localPosition.x, bone.localPosition.y);
+        // Fetch the initial A-pose positions from the data importer
+        Vector3 APoseParentPos = new Vector3(m_animDataImporter.AnimData.a_pose_joints[index][0],
+            m_animDataImporter.AnimData.a_pose_joints[index][1], 0.0f);
+        Vector3 APoseChildPos = new Vector3(m_animDataImporter.AnimData.a_pose_joints[childIndex][0],
+            m_animDataImporter.AnimData.a_pose_joints[childIndex][1], 0.0f);
 
-        Vector2 lastParentPos = lastPositions[parentIndex];
-        Vector2 lastChildPos = lastPositions[index];
+        // Current positions in the actual scene
+        Vector3 currentParentPos = bone.position;
+        Vector3 currentChildPos = child.position;
 
-        Vector2 previousDirection = lastChildPos - lastParentPos;
-        Vector2 currentDirection = currentChildPos - currentParentPos;
+        // Calculate the initial and current direction from the bone to its child.
+        Vector3 initialDirection = (APoseChildPos - APoseParentPos).normalized;
+        Vector3 currentDirection = (currentChildPos - currentParentPos).normalized;
 
-        if (previousDirection == Vector2.zero || currentDirection == Vector2.zero)
+        // Check if directions are valid
+        if (initialDirection == Vector3.zero || currentDirection == Vector3.zero)
         {
-            return; // Avoid zero vector normalization
+            return;  // Skip rotation if the direction vector is zero
         }
 
-        previousDirection.Normalize();
+        initialDirection.Normalize();
         currentDirection.Normalize();
 
-        float angle = Vector2.SignedAngle(previousDirection, currentDirection);
-        bone.localRotation = Quaternion.Euler(0, 0, bone.localRotation.eulerAngles.z + angle);
+        // Calculate the rotation directly
+        Quaternion desiredRotation = Quaternion.FromToRotation(initialDirection, currentDirection);
 
-        // Update last known positions
-        lastPositions[index] = currentChildPos;
-        lastPositions[parentIndex] = currentParentPos;
+        // Determine the angle of rotation and clamp if necessary
+        desiredRotation = ClampRotation(desiredRotation, bone.localRotation, 1.0f);
+
+        // Apply this rotation to the bone's localRotation directly
+        bone.localRotation = desiredRotation;
+    }
+    
+    Quaternion ClampRotation(Quaternion desiredRotation, Quaternion initialRotation, float maxAngle)
+    {
+        // Convert quaternion to angle
+        float angle = Quaternion.Angle(initialRotation, desiredRotation);
+
+        // If the angle is greater than maxAngle, clamp it
+        if (angle > maxAngle)
+        {
+            // Scale down the rotation to the maxAngle
+            desiredRotation = Quaternion.RotateTowards(initialRotation, desiredRotation, maxAngle);
+        }
+
+        return desiredRotation;
     }
 
     void UpdateDebugJoints()
@@ -250,7 +274,6 @@ public class SkeletonMeshAnimator : MonoBehaviour
     
     void Update()
     {
-        
         if (lockDisplayFrame > -1)
         {
             SetDisplayFrame(lockDisplayFrame);
@@ -263,38 +286,5 @@ public class SkeletonMeshAnimator : MonoBehaviour
         ApplyJointRotations();
 
         UpdateDebugJoints();
-    }
-
-    void DrawTriangles()
-    {
-        float duration = 0.01f;
-        Color lineColor = Color.green;
-
-        float xOffset = 1.5f;
-        
-        var skinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
-        if (skinnedMeshRenderer == null) return;
-        Mesh mesh = skinnedMeshRenderer.sharedMesh;
-        if (mesh == null) return;
-
-        Vector3[] vertices = mesh.vertices;
-        int[] triangles = mesh.triangles;
-
-        Transform transform = skinnedMeshRenderer.transform;
-
-        for (int i = 0; i < triangles.Length; i += 3)
-        {
-            Vector3 p1 = transform.TransformPoint(vertices[triangles[i]]);
-            Vector3 p2 = transform.TransformPoint(vertices[triangles[i + 1]]);
-            Vector3 p3 = transform.TransformPoint(vertices[triangles[i + 2]]);
-
-            p1.x += xOffset;
-            p2.x += xOffset;
-            p3.x += xOffset;
-
-            Debug.DrawLine(p1, p2, lineColor, duration);
-            Debug.DrawLine(p2, p3, lineColor, duration);
-            Debug.DrawLine(p3, p1, lineColor, duration);
-        }
     }
 }
