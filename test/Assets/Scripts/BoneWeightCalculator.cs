@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class BoneWeightCalculator : MonoBehaviour
 {
-    public float influenceRadius = 1.06f;  
+    public float influenceRadius = 1.15f;  
 
     public void AssignBoneWeights(SkinnedMeshRenderer skinnedMeshRenderer)
     {
