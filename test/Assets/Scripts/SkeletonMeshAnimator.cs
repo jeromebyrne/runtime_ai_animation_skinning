@@ -1,51 +1,46 @@
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public class SkeletonMeshAnimator : MonoBehaviour
 {
-    private AnimDataImporter m_animDataImporter = new AnimDataImporter();
-
-    private int m_currentFrame = -1;
-    private float frameRate = 1/10.0f;
-    private float lastFrameChange = 0.0f;
-
-    [SerializeField]
-    private GameObject joinVisualPrefab = null;
-    private List<GameObject> jointVisuals = new List<GameObject>();
-
-    private int lockDisplayFrame = -1; // -1 to unlock and animate
-    private bool applyRotations = true;
-    private Vector2[] lastPositions;
+    private const float KFrameRate = 1/10.0f;
+    
+    private readonly AnimDataImporter _animDataImporter = new AnimDataImporter(); // loads json with anim data
+    private int _currentFrame = -1;
+    private float _lastFrameChange;
+    private readonly int _lockDisplayFrame = -1; // -1 to unlock and animate
+    private readonly bool _applyRotations = true; // for debugging
+    private Vector2[] _lastPositions;
+    private readonly List<GameObject> _jointVisuals = new List<GameObject>();
+    private SkinnedMeshRenderer _skinnedMeshRenderer;
+    
+    [SerializeField] private GameObject joinVisualPrefab;
+    [SerializeField] private string animDataFile;
+    [SerializeField] private string animMaterial;
     
     void Start()
     {
-        m_animDataImporter.Import("unpickled.json");
+        _animDataImporter.Import(animDataFile);
 
         Mesh mesh = CreateMesh();
         
-        var bones = CreateSkeleton(m_animDataImporter.AnimData.joints_names, 
-                                            m_animDataImporter.AnimData.joints_parents,
-                                            m_animDataImporter.AnimData.joints,
-                                            m_animDataImporter.AnimData.a_pose_joints);
-        
-        SkinnedMeshRenderer skinnedMeshRenderer = gameObject.GetComponent<SkinnedMeshRenderer>();
-        SetupBoneWeightsAndPoses(mesh, bones, skinnedMeshRenderer);
+        var bones = CreateSkeleton(_animDataImporter.AnimData.joints_names, 
+                                            _animDataImporter.AnimData.joints_parents,
+                                            _animDataImporter.AnimData.a_pose_joints);
+
+        SetupBoneWeightsAndPoses(bones);
     }
     
     Mesh CreateMesh()
     {
         Mesh mesh = new Mesh();
         
-        SkinnedMeshRenderer skinnedRenderer = gameObject.GetComponent<SkinnedMeshRenderer>();
-        if (skinnedRenderer == null) {
-            skinnedRenderer = gameObject.AddComponent<SkinnedMeshRenderer>();
-        }
-        skinnedRenderer.material = Resources.Load<Material>("barbarian_mat");
-
-        skinnedRenderer.sharedMesh = mesh;
+        _skinnedMeshRenderer = gameObject.GetComponent<SkinnedMeshRenderer>();
+        if (_skinnedMeshRenderer == null) _skinnedMeshRenderer = gameObject.AddComponent<SkinnedMeshRenderer>();
+        _skinnedMeshRenderer.material = Resources.Load<Material>(animMaterial);
+        _skinnedMeshRenderer.sharedMesh = mesh;
         
-        var vertData = m_animDataImporter.AnimData.vertices_uv;
+        var vertData = _animDataImporter.AnimData.vertices_uv;
     
         // reformat the vertices from x,y to x,y,z to satisfy Unity Mesh
         Vector3[] vertices = new Vector3[vertData.Count];
@@ -57,11 +52,11 @@ public class SkeletonMeshAnimator : MonoBehaviour
         }
         
         // flatten the triangle data to satisfy unity Mesh
-        int[] triangles = new int[m_animDataImporter.AnimData.triangles.Count * 3];
+        int[] triangles = new int[_animDataImporter.AnimData.triangles.Count * 3];
 
         int currentTriangleIndex = 0;
 
-        foreach (var t in m_animDataImporter.AnimData.triangles)
+        foreach (var t in _animDataImporter.AnimData.triangles)
         {
             for (int i = 0; i < 3; ++i)
             {
@@ -75,7 +70,7 @@ public class SkeletonMeshAnimator : MonoBehaviour
         float uvXScale = 1.15f; // hack workaround
         for (int i = 0; i < vertData.Count; ++i)
         {
-            // bug: in the data uv is actually vu
+            // flip: in the data uv is actually vu
             Vector2 uv = new Vector2(vertData[i][1] * uvXScale,vertData[i][0]);
             uvs[i] = uv;
         }
@@ -92,17 +87,16 @@ public class SkeletonMeshAnimator : MonoBehaviour
 
     Transform[] CreateSkeleton(string[] jointNames, 
                                 int[] jointParents, 
-                                List <List <float[] >> joints,
-                                List <float[] > a_poseJoints)
+                                List <float[] > aPoseJoints)
     {
         Transform[] bones = new Transform[jointNames.Length];
         
-        lastPositions = new Vector2[jointNames.Length];
+        _lastPositions = new Vector2[jointNames.Length];
         
         for (int i = 0; i < jointNames.Length; i++) 
         {
             GameObject bone = new GameObject(jointNames[i]); 
-            bone.transform.localPosition = new Vector3(a_poseJoints[i][0], a_poseJoints[i][1], 0.0f);  // Local position set
+            bone.transform.localPosition = new Vector3(aPoseJoints[i][0], aPoseJoints[i][1], 0.0f);  // Local position set
 
             bones[i] = bone.transform;  
             if (jointParents[i] != -1) 
@@ -110,57 +104,52 @@ public class SkeletonMeshAnimator : MonoBehaviour
                 bones[i].parent = bones[jointParents[i]]; 
             }
             // Store initial local position
-            lastPositions[i] = bones[i].localPosition; 
+            _lastPositions[i] = bones[i].localPosition; 
 
             // create debug joint image
             GameObject jointVisual = Instantiate(joinVisualPrefab, bone.transform.position, Quaternion.identity);
-            jointVisual.transform.position = new Vector3(a_poseJoints[i][0], a_poseJoints[i][1], 0.0f);
+            jointVisual.transform.position = new Vector3(aPoseJoints[i][0], aPoseJoints[i][1], 0.0f);
             DebugJointVisualizer djv = jointVisual.GetComponent<DebugJointVisualizer>();
             djv.m_SpriteRenderer.color = Color.green;
             djv.m_text.text = jointNames[i];
             
-            jointVisuals.Add(jointVisual);
+            _jointVisuals.Add(jointVisual);
         }
 
         return bones;
     }
     
-    void SetupBoneWeightsAndPoses(Mesh mesh, Transform[] bones, SkinnedMeshRenderer renderer) 
+    void SetupBoneWeightsAndPoses(Transform[] bones) 
     {
         // Bind poses are necessary for the bones relative to the mesh
         Matrix4x4[] bindPoses = new Matrix4x4[bones.Length];
-        for (int i = 0; i < bones.Length; i++) {
-            bindPoses[i] = bones[i].worldToLocalMatrix * renderer.transform.localToWorldMatrix;
+        for (int i = 0; i < bones.Length; i++) 
+        {
+            bindPoses[i] = bones[i].worldToLocalMatrix * _skinnedMeshRenderer.transform.localToWorldMatrix;
         }
         
-        mesh.bindposes = bindPoses;
-        
-        renderer.bones = bones;  
-        renderer.rootBone = bones[0];
+        _skinnedMeshRenderer.sharedMesh.bindposes = bindPoses;
+        _skinnedMeshRenderer.bones = bones;  
+        _skinnedMeshRenderer.rootBone = bones[0];
         
         // make the MeshAnimation the parent for easy viewing in Editor
-        renderer.rootBone.parent = gameObject.transform;
+        _skinnedMeshRenderer.rootBone.parent = gameObject.transform;
 
         BoneWeightCalculator bwCalc = gameObject.AddComponent<BoneWeightCalculator>();
-        bwCalc.AssignBoneWeights(renderer);
+        bwCalc.AssignBoneWeights(_skinnedMeshRenderer);
     }
 
     void Animate()
     {
-        lastFrameChange -= Time.deltaTime;
+        _lastFrameChange -= Time.deltaTime;
 
-        int numFrames = m_animDataImporter.AnimData.joints.Count;
-
-        int nextFrame = m_currentFrame;
-        if (lastFrameChange <= 0.0f)
+        int nextFrame = _currentFrame;
+        if (_lastFrameChange <= 0.0f)
         {
             nextFrame++;
-            if (nextFrame >= numFrames)
-            {
-                nextFrame = 0;
-            }
-            
-            lastFrameChange = frameRate;
+            if (nextFrame >= _animDataImporter.AnimData.joints.Count) nextFrame = 0;
+ 
+            _lastFrameChange = KFrameRate;
         }
 
         SetDisplayFrame(nextFrame);
@@ -168,46 +157,35 @@ public class SkeletonMeshAnimator : MonoBehaviour
 
     void SetDisplayFrame(int frame)
     {
-        if (m_currentFrame == frame)
-        {
-            return;
-        }
+        if (_currentFrame == frame) return;
 
-        m_currentFrame = frame;
+        _currentFrame = frame;
         
-        var frameJoints = m_animDataImporter.AnimData.joints[m_currentFrame];
-
-        SkinnedMeshRenderer renderer = gameObject.GetComponent<SkinnedMeshRenderer>();
+        var frameJoints = _animDataImporter.AnimData.joints[_currentFrame];
         
-        for (int i = 0; i < renderer.bones.Length && i < frameJoints.Count; i++)
+        for (int i = 0; i < _skinnedMeshRenderer.bones.Length && i < frameJoints.Count; i++)
         {
+            // TODO: new Vector here is inefficient, store the joints as Vector3 array at creation
             Vector3 newPosition = new Vector3(frameJoints[i][0], frameJoints[i][1], 0);
-            renderer.bones[i].position = newPosition;
+            _skinnedMeshRenderer.bones[i].position = newPosition;
         }
     }
 
     void ApplyJointRotations()
     {
-        if (!applyRotations)
-        {
-            return;
-        }
+        if (!_applyRotations) return;
     
-        var frameJoints = m_animDataImporter.AnimData.joints[m_currentFrame];
-        SkinnedMeshRenderer renderer = gameObject.GetComponent<SkinnedMeshRenderer>();
+        var frameJoints = _animDataImporter.AnimData.joints[_currentFrame];
 
         // Process each bone according to the hierarchy defined by joints_parents
-        for (int i = 0; i < renderer.bones.Length; i++)
+        for (int i = 0; i < _skinnedMeshRenderer.bones.Length; i++)
         {
-            if (renderer.bones[i] == null || i >= frameJoints.Count)
-                continue;
+            int parentIndex = _animDataImporter.AnimData.joints_parents[i];
+            Transform parentBone = (parentIndex != -1 && parentIndex < _skinnedMeshRenderer.bones.Length) ? _skinnedMeshRenderer.bones[parentIndex] : null;
 
-            int parentIndex = m_animDataImporter.AnimData.joints_parents[i];
-            Transform parentBone = (parentIndex != -1 && parentIndex < renderer.bones.Length) ? renderer.bones[parentIndex] : null;
-
-            if (parentBone != null)
+            if (parentBone)
             {
-                ApplyRotation(renderer.bones[i], parentBone, i, parentIndex);
+                ApplyRotation(_skinnedMeshRenderer.bones[i], parentBone, i, parentIndex);
             }
         }
     }
@@ -215,24 +193,22 @@ public class SkeletonMeshAnimator : MonoBehaviour
     void ApplyRotation(Transform bone, Transform child, int index, int childIndex)
     {
         // Fetch the initial A-pose positions from the data importer
-        Vector3 APoseParentPos = new Vector3(m_animDataImporter.AnimData.a_pose_joints[index][0],
-            m_animDataImporter.AnimData.a_pose_joints[index][1], 0.0f);
-        Vector3 APoseChildPos = new Vector3(m_animDataImporter.AnimData.a_pose_joints[childIndex][0],
-            m_animDataImporter.AnimData.a_pose_joints[childIndex][1], 0.0f);
+        // TODO: new Vector here is inefficient, store the joints as Vector3 array at creation
+        Vector3 aposeParentPos = new Vector3(_animDataImporter.AnimData.a_pose_joints[index][0],
+            _animDataImporter.AnimData.a_pose_joints[index][1], 0.0f);
+        Vector3 aposeChildPos = new Vector3(_animDataImporter.AnimData.a_pose_joints[childIndex][0],
+            _animDataImporter.AnimData.a_pose_joints[childIndex][1], 0.0f);
 
         // Current positions in the actual scene
         Vector3 currentParentPos = bone.position;
         Vector3 currentChildPos = child.position;
 
         // Calculate the initial and current direction from the bone to its child.
-        Vector3 initialDirection = (APoseChildPos - APoseParentPos).normalized;
+        Vector3 initialDirection = (aposeChildPos - aposeParentPos).normalized;
         Vector3 currentDirection = (currentChildPos - currentParentPos).normalized;
 
         // Check if directions are valid
-        if (initialDirection == Vector3.zero || currentDirection == Vector3.zero)
-        {
-            return;  // Skip rotation if the direction vector is zero
-        }
+        if (initialDirection == Vector3.zero || currentDirection == Vector3.zero)  return;  // Skip rotation if the direction vector is zero
 
         initialDirection.Normalize();
         currentDirection.Normalize();
@@ -240,43 +216,23 @@ public class SkeletonMeshAnimator : MonoBehaviour
         // Calculate the rotation directly
         Quaternion desiredRotation = Quaternion.FromToRotation(initialDirection, currentDirection);
 
-        // Determine the angle of rotation and clamp if necessary
-        desiredRotation = ClampRotation(desiredRotation, bone.localRotation, 1.0f);
-
         // Apply this rotation to the bone's localRotation directly
         bone.localRotation = desiredRotation;
-    }
-    
-    Quaternion ClampRotation(Quaternion desiredRotation, Quaternion initialRotation, float maxAngle)
-    {
-        // Convert quaternion to angle
-        float angle = Quaternion.Angle(initialRotation, desiredRotation);
-
-        // If the angle is greater than maxAngle, clamp it
-        if (angle > maxAngle)
-        {
-            // Scale down the rotation to the maxAngle
-            desiredRotation = Quaternion.RotateTowards(initialRotation, desiredRotation, maxAngle);
-        }
-
-        return desiredRotation;
     }
 
     void UpdateDebugJoints()
     {
-        SkinnedMeshRenderer renderer = gameObject.GetComponent<SkinnedMeshRenderer>();
-        
-        for (int i = 0; i < renderer.bones.Length; i++)
+        for (int i = 0; i < _skinnedMeshRenderer.bones.Length; i++)
         {
-            jointVisuals[i].transform.position = renderer.bones[i].position;
+            _jointVisuals[i].transform.position = _skinnedMeshRenderer.bones[i].position;
         }
     }
     
     void Update()
     {
-        if (lockDisplayFrame > -1)
+        if (_lockDisplayFrame > -1)
         {
-            SetDisplayFrame(lockDisplayFrame);
+            SetDisplayFrame(_lockDisplayFrame);
         }
         else
         {
