@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using Newtonsoft.Json;
-using Unity.Notifications.Android;
-using Unity.VisualScripting;
 
 public class AnimDataImporter
 {
@@ -79,7 +77,7 @@ public class AnimDataImporter
             }
         }
         
-        // Debugging
+        // for debugging:
         // AnimData.a_pose_joints = AnimData.joints[0];
     }
 }
