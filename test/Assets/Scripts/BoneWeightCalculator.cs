@@ -69,7 +69,10 @@ public class BoneWeightCalculator : MonoBehaviour
                 int current = queue.Dequeue();
                 foreach (int neighbor in vertexNeighbors[current])
                 {
-                    float edgeDistance = Vector3.Distance(vertices[current], vertices[neighbor]) + vertexDistances[current];
+                    float edgeDistance = Vector3.Distance(
+                        new Vector3(vertices[current].x, vertices[current].y, 0.0f),
+                        new Vector3(vertices[neighbor].x, vertices[neighbor].y, 0.0f)
+                    ) + vertexDistances[current];
                     if (edgeDistance < vertexDistances[neighbor] && edgeDistance < influenceRadius)
                     {
                         vertexDistances[neighbor] = edgeDistance;
@@ -120,9 +123,14 @@ public class BoneWeightCalculator : MonoBehaviour
         float minDistance = float.MaxValue;
         int closestVertexIndex = -1;
 
+        // Project bonePosition onto a 2D plane
+        Vector3 bonePosition2D = new Vector3(bonePosition.x, bonePosition.y, 0.0f);
+
         for (int i = 0; i < vertices.Length; i++)
         {
-            float dist = Vector3.Distance(bonePosition, vertices[i]);
+            // Project each vertex onto a 2D plane
+            Vector3 vertex2D = new Vector3(vertices[i].x, vertices[i].y, 0.0f);
+            float dist = Vector3.Distance(bonePosition2D, vertex2D);
             if (dist < minDistance)
             {
                 minDistance = dist;
