@@ -3,30 +3,39 @@ using UnityEngine;
 
 public class SkeletonMeshAnimator : MonoBehaviour
 {
-    private const float KFrameRate = 1/10.0f;
-    
+    private const float KFrameRate = 1 / 10.0f;
+
     private readonly AnimDataImporter _animDataImporter = new AnimDataImporter(); // loads json with anim data
     private int _currentFrame = -1;
     private float _lastFrameChange;
     private readonly int _lockDisplayFrame = -1; // -1 to unlock and animate
     private readonly bool _applyRotations = true; // for debugging
-    private Vector2[] _lastPositions;
+    private Vector3[] _targetPositions;
     private readonly List<GameObject> _jointVisuals = new List<GameObject>();
     private SkinnedMeshRenderer _skinnedMeshRenderer;
-    
+
     [SerializeField] private GameObject joinVisualPrefab;
     [SerializeField] private string animDataFile;
     [SerializeField] private string animMaterial;
-    
+
+    bool _debugAPose = false;
+    bool _useFastBoneWeightCalc = false;
+    bool _showDebugJoints = false;
+
+    // List of joint indices for which to reduce rotation by 50%
+    private HashSet<int> jointsToReduceRotation = new HashSet<int> { /* Populate with indices that need reduced rotation */ };
+
     void Start()
     {
         _animDataImporter.Import(animDataFile);
 
         Mesh mesh = CreateMesh();
-        
-        var bones = CreateSkeleton(_animDataImporter.AnimData.joints_names, 
+
+        var bones = CreateSkeleton(_animDataImporter.AnimData.joints_names,
                                             _animDataImporter.AnimData.joints_parents,
                                             _animDataImporter.AnimData.a_pose_joints);
+
+        _targetPositions = new Vector3[bones.Length];
 
         SetupBoneWeightsAndPoses(bones);
     }
@@ -50,7 +59,9 @@ public class SkeletonMeshAnimator : MonoBehaviour
             Vector3 v = new Vector3(vertData[i][1],vertData[i][0], 1.0f);
             vertices[i] = v;
         }
-        
+
+        adjustVerticesDepth(vertices);
+
         // flatten the triangle data to satisfy unity Mesh
         int[] triangles = new int[_animDataImporter.AnimData.triangles.Count * 3];
 
@@ -91,8 +102,6 @@ public class SkeletonMeshAnimator : MonoBehaviour
     {
         Transform[] bones = new Transform[jointNames.Length];
         
-        _lastPositions = new Vector2[jointNames.Length];
-        
         for (int i = 0; i < jointNames.Length; i++) 
         {
             GameObject bone = new GameObject(jointNames[i]); 
@@ -103,17 +112,18 @@ public class SkeletonMeshAnimator : MonoBehaviour
             {  
                 bones[i].parent = bones[jointParents[i]]; 
             }
-            // Store initial local position
-            _lastPositions[i] = bones[i].localPosition; 
 
             // create debug joint image
-            GameObject jointVisual = Instantiate(joinVisualPrefab, bone.transform.position, Quaternion.identity);
-            jointVisual.transform.position = new Vector3(aPoseJoints[i][0], aPoseJoints[i][1], 0.0f);
-            DebugJointVisualizer djv = jointVisual.GetComponent<DebugJointVisualizer>();
-            djv.m_SpriteRenderer.color = Color.green;
-            djv.m_text.text = jointNames[i];
-            
-            _jointVisuals.Add(jointVisual);
+            if (_showDebugJoints)
+            {
+                GameObject jointVisual = Instantiate(joinVisualPrefab, bone.transform.position, Quaternion.identity);
+                jointVisual.transform.position = new Vector3(aPoseJoints[i][0], aPoseJoints[i][1], 0.0f);
+                DebugJointVisualizer djv = jointVisual.GetComponent<DebugJointVisualizer>();
+                djv.m_SpriteRenderer.color = Color.green;
+                djv.m_text.text = (i + 1).ToString() + "_" + jointNames[i];
+
+                _jointVisuals.Add(jointVisual);
+            }
         }
 
         return bones;
@@ -134,9 +144,17 @@ public class SkeletonMeshAnimator : MonoBehaviour
         
         // make the MeshAnimation the parent for easy viewing in Editor
         _skinnedMeshRenderer.rootBone.parent = gameObject.transform;
-
-        BoneWeightCalculator bwCalc = gameObject.AddComponent<BoneWeightCalculator>();
-        bwCalc.AssignBoneWeights(_skinnedMeshRenderer);
+        if (_useFastBoneWeightCalc)
+        {
+            FastBoneWeightCalculator fastBwCalc = gameObject.AddComponent<FastBoneWeightCalculator>();
+            fastBwCalc.AssignBoneWeights(_skinnedMeshRenderer);
+        }
+        else
+        {
+            // This is insanely expensive
+            BoneWeightCalculator bwCalc = gameObject.AddComponent<BoneWeightCalculator>();
+            bwCalc.AssignBoneWeights(_skinnedMeshRenderer);
+        }
     }
 
     void Animate()
@@ -148,7 +166,7 @@ public class SkeletonMeshAnimator : MonoBehaviour
         {
             nextFrame++;
             if (nextFrame >= _animDataImporter.AnimData.joints.Count) nextFrame = 0;
- 
+
             _lastFrameChange = KFrameRate;
         }
 
@@ -157,27 +175,26 @@ public class SkeletonMeshAnimator : MonoBehaviour
 
     void SetDisplayFrame(int frame)
     {
+        if (_debugAPose) return;
+
         if (_currentFrame == frame) return;
 
         _currentFrame = frame;
-        
+
         var frameJoints = _animDataImporter.AnimData.joints[_currentFrame];
-        
+
         for (int i = 0; i < _skinnedMeshRenderer.bones.Length && i < frameJoints.Count; i++)
         {
-            // TODO: new Vector here is inefficient, store the joints as Vector3 array at creation
-            Vector3 newPosition = new Vector3(frameJoints[i][0], frameJoints[i][1], 0);
-            _skinnedMeshRenderer.bones[i].position = newPosition;
+            _targetPositions[i] = new Vector3(frameJoints[i][0], frameJoints[i][1], _skinnedMeshRenderer.bones[i].position.z);
         }
     }
 
     void ApplyJointRotations()
     {
         if (!_applyRotations) return;
-    
+
         var frameJoints = _animDataImporter.AnimData.joints[_currentFrame];
 
-        // Process each bone according to the hierarchy defined by joints_parents
         for (int i = 0; i < _skinnedMeshRenderer.bones.Length; i++)
         {
             int parentIndex = _animDataImporter.AnimData.joints_parents[i];
@@ -189,39 +206,39 @@ public class SkeletonMeshAnimator : MonoBehaviour
             }
         }
     }
-    
+
     void ApplyRotation(Transform bone, Transform child, int index, int childIndex)
     {
-        // Fetch the initial A-pose positions from the data importer
-        // TODO: new Vector here is inefficient, store the joints as Vector3 array at creation
         Vector3 aposeParentPos = new Vector3(_animDataImporter.AnimData.a_pose_joints[index][0],
             _animDataImporter.AnimData.a_pose_joints[index][1], 0.0f);
         Vector3 aposeChildPos = new Vector3(_animDataImporter.AnimData.a_pose_joints[childIndex][0],
             _animDataImporter.AnimData.a_pose_joints[childIndex][1], 0.0f);
 
-        // Current positions in the actual scene
         Vector3 currentParentPos = bone.position;
         Vector3 currentChildPos = child.position;
 
-        // Calculate the initial and current direction from the bone to its child.
         Vector3 initialDirection = (aposeChildPos - aposeParentPos).normalized;
         Vector3 currentDirection = (currentChildPos - currentParentPos).normalized;
 
-        // Check if directions are valid
-        if (initialDirection == Vector3.zero || currentDirection == Vector3.zero)  return;  // Skip rotation if the direction vector is zero
+        if (initialDirection == Vector3.zero || currentDirection == Vector3.zero) return;
 
-        initialDirection.Normalize();
-        currentDirection.Normalize();
-
-        // Calculate the rotation directly
         Quaternion desiredRotation = Quaternion.FromToRotation(initialDirection, currentDirection);
 
-        // Apply this rotation to the bone's localRotation directly
+        // If this bone requires reduced rotation, scale the rotation by 50%
+        if (jointsToReduceRotation.Contains(index))
+        {
+            // desiredRotation = Quaternion.Slerp(Quaternion.identity, desiredRotation, 1.5f);
+        }
+
         bone.localRotation = desiredRotation;
     }
 
+
     void UpdateDebugJoints()
     {
+        if (!_showDebugJoints)
+        { return; }
+
         for (int i = 0; i < _skinnedMeshRenderer.bones.Length; i++)
         {
             _jointVisuals[i].transform.position = _skinnedMeshRenderer.bones[i].position;
@@ -230,6 +247,11 @@ public class SkeletonMeshAnimator : MonoBehaviour
     
     void Update()
     {
+        if (_debugAPose)
+        {
+            return;
+        }
+
         if (_lockDisplayFrame > -1)
         {
             SetDisplayFrame(_lockDisplayFrame);
@@ -238,9 +260,36 @@ public class SkeletonMeshAnimator : MonoBehaviour
         {
             Animate();
         }
-        
-        ApplyJointRotations();
 
+        ApplyJointRotations();
+        UpdateJointPositions();
         UpdateDebugJoints();
+    }
+
+    void UpdateJointPositions()
+    {
+        if (_targetPositions == null) return;
+
+        for (int i = 0; i < _skinnedMeshRenderer.bones.Length; i++)
+        {
+            if (_targetPositions.Length > i)
+            {
+                _skinnedMeshRenderer.bones[i].position = Vector3.Lerp(_skinnedMeshRenderer.bones[i].position, _targetPositions[i], Time.deltaTime / KFrameRate);
+            }
+        }
+    }
+
+    void adjustVerticesDepth(Vector3[] vertices)
+    {
+        /*
+        float frontZ = -1f; // Z-value for the vertices with the smallest X
+        float backZ = 1f; // Z-value for the vertices with the largest X
+
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            // Directly map the normalized X-coordinate to a depth value
+            vertices[i].z = 1.0f + (vertices[i].x * 0.1f); // Mathf.Lerp(frontZ, backZ, vertices[i].x); // Linearly interpolate Z based on existing X value
+        }
+        */
     }
 }
