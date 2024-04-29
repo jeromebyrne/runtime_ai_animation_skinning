@@ -270,7 +270,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   joinVisualPrefab: {fileID: 5993232049128721125, guid: f6fd6761f304a4a6d97c9cfd28d72c9f, type: 3}
-  animDataFile: walk.json
+  animDataFile: attack.json
   animMaterial: barbarian_mat
 --- !u!1 &888527939
 GameObject:

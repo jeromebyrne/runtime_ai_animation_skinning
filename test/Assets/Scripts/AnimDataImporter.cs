@@ -76,8 +76,5 @@ public class AnimDataImporter
                 j[1] += yOffset;
             }
         }
-        
-        // for debugging:
-        // AnimData.a_pose_joints = AnimData.joints[0];
     }
 }

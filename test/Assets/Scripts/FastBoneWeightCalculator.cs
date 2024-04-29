@@ -59,7 +59,11 @@ public class FastBoneWeightCalculator : MonoBehaviour
 
             for (int v = 0; v < vertices.Length; v++)
             {
-                float distance = Vector3.Distance(bones[b].position, vertices[v]);
+                // Project both vertices and bones onto a 2D plane by zeroing out the z-component
+                Vector3 bonePosition2D = new Vector3(bones[b].position.x, bones[b].position.y, 0.0f);
+                Vector3 vertex2D = new Vector3(vertices[v].x, vertices[v].y, 0.0f);
+
+                float distance = Vector3.Distance(bonePosition2D, vertex2D);
                 cache[b][v] = distance;
             }
         }
