@@ -19,9 +19,9 @@ public class SkeletonMeshAnimator : MonoBehaviour
     [SerializeField] private string animDataFile;
     [SerializeField] private string animMaterial;
 
-    bool _debugAPose = false;
-    bool _useFastBoneWeightCalc = false;
-    bool _showDebugJoints = false;
+    bool _debugAPose = true;
+    bool _useFastBoneWeightCalc = true;
+    bool _showDebugJoints = true;
 
     // List of joint indices for which to reduce rotation by 50%
     private HashSet<int> jointsToReduceRotation = new HashSet<int> { /* Populate with indices that need reduced rotation */ };
@@ -79,8 +79,8 @@ public class SkeletonMeshAnimator : MonoBehaviour
         }
         
         // reformat the UVs into Vector2 to satisfy Unity Mesh
-        Vector2[] uvs = new Vector2[vertData.Count];    
-        float uvXScale = 1.15f; // hack workaround
+        Vector2[] uvs = new Vector2[vertData.Count];
+        float uvXScale = 1.48f; // hack workaround
         for (int i = 0; i < vertData.Count; ++i)
         {
             // flip: in the data uv is actually vu

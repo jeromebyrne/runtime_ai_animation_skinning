@@ -33,8 +33,8 @@ public class AnimDataImporter
     private void ApplyWorkarounds()
     {
         // normalize the a_pose since the data is in pixel space
-        float imageWidth = 625.0f; // hardcoded for barbarian image
-        float imageHeight = 707.0f;
+        float imageWidth = 533.0f; // hardcoded for barbarian image
+        float imageHeight = 778.0f;
         
         for (int i = 0; i < AnimData.a_pose_joints.Count; i++)
         {
@@ -55,7 +55,7 @@ public class AnimDataImporter
             //AnimData.a_pose_joints[i][0] += 1.0f;
             
             // joints seem to be offset from texture so this is a workaround
-            AnimData.a_pose_joints[i][0] -= 0.05f;
+            AnimData.a_pose_joints[i][0] -= 0.15f;
         }
         
         // joints seem to be smaller than mesh

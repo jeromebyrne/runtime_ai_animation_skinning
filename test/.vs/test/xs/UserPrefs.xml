@@ -1,31 +1,35 @@
 ﻿<Properties StartupConfiguration="{E5C00A68-E6DB-FEA3-938C-F34D364EA738}|">
-  <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore />
-  </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MultiItemStartupConfigurations />
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/SkeletonMeshAnimator.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/BoneWeightCalculator.cs">
     <Files>
-      <File FileName="Assets/Scripts/BoneWeightCalculator.cs" Line="24" Column="6" />
-      <File FileName="Assets/Scripts/SkeletonMeshAnimator.cs" Line="24" Column="1" />
-      <File FileName="Assets/Scripts/AnimDataImporter.cs" Line="78" Column="10" />
-      <File FileName="Assets/Scripts/DebugJointVisualizer.cs" Line="4" Column="34" />
-      <File FileName="Assets/Scripts/FastBoneWeightCalculator.cs" Line="19" Column="50" />
-      <File FileName="Assets/Resources/NewSurfaceShader.shader" Line="59" Column="1" />
+      <File FileName="Assets/Resources/attack.json" />
+      <File FileName="Assets/Resources/dwarf_walk.json" />
+      <File FileName="Assets/Scripts/BoneWeightCalculator.cs" Line="31" Column="1" />
+      <File FileName="Assets/Scripts/SkeletonMeshAnimator.cs" />
+      <File FileName="Assets/Scripts/AnimDataImporter.cs" Line="55" Column="52" />
+      <File FileName="Assets/Scripts/DebugJointVisualizer.cs" />
+      <File FileName="Assets/Scripts/FastBoneWeightCalculator.cs" />
+      <File FileName="Assets/Resources/DepthMappingShader.shader" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State name="__root__">
-          <Node name="test" expanded="True">
+          <Node name="test">
             <Node name="Assets" expanded="True">
               <Node name="Resources" expanded="True" />
-              <Node name="Scripts" expanded="True" />
+              <Node name="Scripts" expanded="True">
+                <Node name="BoneWeightCalculator.cs" selected="True" />
+              </Node>
             </Node>
           </Node>
         </State>
       </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="0eda7040-b48a-4675-acca-fa265c187c7c" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="7cb58257-40b0-4aa9-bc2a-ffcf6ec7a0d1" />
 </Properties>
